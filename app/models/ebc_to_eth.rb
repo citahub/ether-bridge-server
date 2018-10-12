@@ -1,4 +1,4 @@
-class EthToEbc < ApplicationRecord
+class EbcToEth < ApplicationRecord
   enum status: {
     pending: 0,
     completed: 10,
