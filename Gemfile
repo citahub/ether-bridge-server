@@ -34,6 +34,11 @@ gem 'dotenv-rails', '~> 2.5'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+
+  gem 'rspec-rails', '~> 3.8'
+  gem 'factory_bot_rails', '~> 4.11', '>= 4.11.1'
+  gem 'database_cleaner', '~> 1.7'
+  gem 'simplecov', '~> 0.16.1', require: false
 end
 
 group :development do
