@@ -1,0 +1,2 @@
+class EthToEbc < ApplicationRecord
+end
