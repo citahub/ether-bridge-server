@@ -1,0 +1,34 @@
+language: ruby
+
+services:
+  - postgresql
+
+addons:
+  postgresql: "9.4"
+
+rvm:
+  - 2.5.1
+
+env:
+  global:
+    - RAILS_ENV=test
+
+cache:
+  bundler: true
+
+install:
+  - git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && ./tests && sudo make install && cd ..
+  - gem install bundler
+  - bundle install
+
+before_script:
+  # setup db
+  - psql -c 'create database "ether-bridge-server_test";' -U postgres
+  - cp .env.test.local.travis .env.test.local
+
+script:
+  - bundle exec rails db:migrate
+  - bundle exec rails spec
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
