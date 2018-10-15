@@ -37,6 +37,11 @@ gem 'active_model_serializers', '~> 0.10.7'
 # paginate
 gem 'kaminari', '~> 1.1', '>= 1.1.1'
 
+# Deployment
+gem 'mina', require: false
+gem 'mina-puma', require: false
+gem 'mina-multistage', require: false
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
