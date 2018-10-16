@@ -1,8 +1,9 @@
 class EbcToEth < ApplicationRecord
   enum status: {
-    pending: 0,
-    completed: 10,
-    error_status: 20
+    started: 0,
+    pending: 10,
+    completed: 20,
+    error_status: 30
   }
 
   before_save :update_status

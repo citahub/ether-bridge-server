@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_12_072258) do
+ActiveRecord::Schema.define(version: 2018_10_16_023926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,13 +24,13 @@ ActiveRecord::Schema.define(version: 2018_10_12_072258) do
     t.integer "wd_block_num"
     t.string "eth_tx_hash"
     t.integer "eth_block_num"
-    t.datetime "eth_tx_at"
     t.string "burn_tx_hash"
     t.integer "burn_block_num"
     t.integer "status", default: 0
     t.datetime "status_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "eth_tx_timestamp"
     t.index ["address"], name: "index_ebc_to_eths_on_address"
     t.index ["status"], name: "index_ebc_to_eths_on_status"
   end
@@ -41,15 +41,15 @@ ActiveRecord::Schema.define(version: 2018_10_12_072258) do
     t.datetime "initialized_at"
     t.string "eth_tx_hash"
     t.integer "eth_block_num"
-    t.datetime "eth_block_at"
     t.string "ac_tx_hash"
     t.datetime "ac_tx_at"
-    t.integer "ac_block_height"
-    t.integer "ac_block_at"
+    t.integer "ac_block_num"
     t.integer "status", default: 0
     t.datetime "status_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "eth_block_timestamp"
+    t.bigint "ac_block_timestamp"
     t.index ["address"], name: "index_eth_to_ebcs_on_address"
     t.index ["status"], name: "index_eth_to_ebcs_on_status"
   end

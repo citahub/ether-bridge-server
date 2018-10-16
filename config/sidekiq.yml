@@ -1,0 +1,11 @@
+---
+:concurrency: <%= ENV["SIDEKIQ_THREADS"]&.to_i || 20 %>
+:pidfile: tmp/pids/sidekiq.pid
+:logfile: log/sidekiq.log
+:queues:
+  - [default, 1]
+  - [eth_to_ebc_transfers, 2]
+  - [eth_to_ebc_process_transfers, 1]
+  - [eth_to_ebc_listen_transactions, 1]
+  - [eth_to_ebc_update_tx, 2]
+  - [eth_to_ebc_process_update_tx, 1]
