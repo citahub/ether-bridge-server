@@ -3,7 +3,7 @@ class EthToEbc < ApplicationRecord
     started: 0,
     pending: 10,
     completed: 20,
-    error_status: 30
+    failed: 30
   }
 
   validates :eth_tx_hash, presence: true, uniqueness: true

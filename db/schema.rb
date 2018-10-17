@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_16_023926) do
+ActiveRecord::Schema.define(version: 2018_10_17_072714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,7 +18,6 @@ ActiveRecord::Schema.define(version: 2018_10_16_023926) do
   create_table "ebc_to_eths", force: :cascade do |t|
     t.string "address"
     t.string "value"
-    t.datetime "initialized_at"
     t.string "wd_tx_hash"
     t.decimal "wdid", precision: 260
     t.integer "wd_block_num"
@@ -31,6 +30,7 @@ ActiveRecord::Schema.define(version: 2018_10_16_023926) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "eth_tx_timestamp"
+    t.bigint "initialized_timestamp"
     t.index ["address"], name: "index_ebc_to_eths_on_address"
     t.index ["status"], name: "index_ebc_to_eths_on_status"
   end
