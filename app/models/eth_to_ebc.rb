@@ -1,9 +1,12 @@
 class EthToEbc < ApplicationRecord
   enum status: {
-    pending: 0,
-    completed: 10,
-    error_status: 20
+    started: 0,
+    pending: 10,
+    completed: 20,
+    error_status: 30
   }
+
+  validates :eth_tx_hash, presence: true, uniqueness: true
 
   before_save :update_status
 
