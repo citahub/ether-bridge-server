@@ -62,6 +62,9 @@ gem 'mina-sidekiq', '~> 1.0', '>= 1.0.3', require: false
 
 # appchain sdk
 gem "napp.rb", github: "cryptape/napp.rb"
+# ethereum sdk
+gem 'eth', '~> 0.4.10'
+gem 'ethereum.rb', '~> 2.2'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

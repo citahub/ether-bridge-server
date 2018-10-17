@@ -3,8 +3,11 @@ class EbcToEth < ApplicationRecord
     started: 0,
     pending: 10,
     completed: 20,
-    error_status: 30
+    failed: 30,
+    success: 40,
   }
+
+  validates :wd_tx_hash, presence: true, uniqueness: true
 
   before_save :update_status
 

@@ -137,7 +137,7 @@ class EthereumNetwork
       tx.update({
                   ac_block_num: transaction["blockNumber"].hex,
                   ac_block_timestamp: transaction["timestamp"],
-                  status: transaction["errorMessage"].nil? ? :completed : :error_status
+                  status: transaction["errorMessage"].nil? ? :completed : :failed
                 })
     end
   end
