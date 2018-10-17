@@ -71,7 +71,7 @@ class EthereumNetwork
   def process_transfers
     web3 = self.class.new_web3
     eth_current_block_num = web3.eth.blockNumber
-    eth_to_ebcs = EthToEbc.where("eth_block_num <= ?", eth_current_block_num - 30)
+    eth_to_ebcs = EthToEbc.started.where("eth_block_num <= ?", eth_current_block_num - 30)
     eth_to_ebcs.each do |e2e|
       # transfer(e2e.eth_tx_hash)
       EthToEbcTransferJob.perform_later(e2e.eth_tx_hash)
