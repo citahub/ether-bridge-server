@@ -129,7 +129,7 @@ class AppChainNetwork
   def confirm_tx
     web3 = EthereumNetwork.new_web3
     eth_current_block_num = web3.eth.blockNumber
-    EbcToEth.completed.where("eth_block_num <= ?", eth_current_block_num - 30).update_all(status: :succeeded)
+    EbcToEth.completed.where("eth_block_num <= ?", eth_current_block_num - 30).update_all(status: :success)
   end
 
 end

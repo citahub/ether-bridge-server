@@ -4,7 +4,7 @@ class EbcToEth < ApplicationRecord
     pending: 10,
     completed: 20,
     failed: 30,
-    succeeded: 40,
+    success: 40,
   }
 
   validates :wd_tx_hash, presence: true, uniqueness: true
