@@ -137,6 +137,8 @@ GEM
     mina-puma (1.1.0)
       mina (~> 1.2.0)
       puma (>= 2.13)
+    mina-sidekiq (1.0.3)
+      mina (>= 1.0.2)
     mini_mime (1.0.1)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
@@ -278,6 +280,7 @@ DEPENDENCIES
   mina
   mina-multistage
   mina-puma
+  mina-sidekiq (~> 1.0, >= 1.0.3)
   napp.rb!
   oj (~> 3.6, >= 3.6.11)
   pg (~> 1.1, >= 1.1.3)

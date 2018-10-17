@@ -58,6 +58,7 @@ gem 'sidekiq-unique-jobs', '~> 6.0', '>= 6.0.6'
 gem 'mina', require: false
 gem 'mina-puma', require: false
 gem 'mina-multistage', require: false
+gem 'mina-sidekiq', '~> 1.0', '>= 1.0.3', require: false
 
 # appchain sdk
 gem "napp.rb", github: "cryptape/napp.rb"

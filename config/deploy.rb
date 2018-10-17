@@ -5,6 +5,7 @@ require 'mina/git'
 # require 'mina/rbenv'  # for rbenv support. (https://rbenv.org)
 require 'mina/rvm'    # for rvm support. (https://rvm.io)
 require 'mina/puma'
+require 'mina_sidekiq/tasks'
 
 # Basic settings:
 #   domain       - The hostname to SSH to.
@@ -82,7 +83,9 @@ task :deploy do
 
     on :launch do
       in_path(fetch(:current_path)) do
+        invoke :'sidekiq:quiet'
         invoke :'puma:phased_restart'
+        invoke :'sidekiq:restart'
       end
     end
   end
