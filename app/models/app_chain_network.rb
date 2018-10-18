@@ -35,12 +35,13 @@ class AppChainNetwork
   end
 
   def withdraw_events(page = 1)
-    result(page: page)["eventLogs"].select { |e| e["topics"]&.include?(WITHDRAW_SIGNATURE) }
+    event_logs = result(page: page)["eventLogs"]
+    [event_logs.select { |e| e["topics"]&.include?(WITHDRAW_SIGNATURE) }, event_logs.empty?]
   end
 
   def listen_event_logs(page = 1)
-    event_logs = withdraw_events(page)
-    return if event_logs.empty?
+    event_logs, is_empty = withdraw_events(page)
+    return if is_empty
 
     appchain_url = ENV.fetch("APPCHAIN_URL")
     napp = NApp::Client.new(appchain_url)

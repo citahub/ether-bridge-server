@@ -42,8 +42,8 @@ class EthereumNetwork
 
   # listen transactions from etherscan
   def listen_transactions(page = 1)
-    transactions = to_txs(page)
-    return if transactions.empty?
+    transactions, is_empty = to_txs(page)
+    return if is_empty
 
     transactions.each do |tx|
       eth_tx_hash = tx["hash"]
@@ -64,7 +64,8 @@ class EthereumNetwork
   # get transactions whose "to" is us
   def to_txs(page = 1)
     account_address = ENV.fetch("ACCOUNT_ADDRESS")
-    result(page: page).select { |tx| same_address?(tx["to"], account_address) }
+    txs = result(page: page)
+    [txs.select { |tx| same_address?(tx["to"], account_address) }, txs.empty?]
   end
 
   # process transactions who's confirmed over 30 blocks
