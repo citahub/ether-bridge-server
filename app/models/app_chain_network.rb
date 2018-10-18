@@ -92,9 +92,9 @@ class AppChainNetwork
   def transfer(wd_tx_hash)
     tx = EbcToEth.find_by(wd_tx_hash: wd_tx_hash)
     return if tx.nil?
-    return unless tx.started?
 
     tx.with_lock do
+      return unless tx.started?
       private_key = ENV.fetch("ACCOUNT_PRIVATE_KEY")
       pk = NApp::Utils.remove_hex_prefix(private_key)
       key = Eth::Key.new priv: pk

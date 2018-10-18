@@ -83,9 +83,9 @@ class EthereumNetwork
   def transfer(eth_tx_hash)
     tx = EthToEbc.find_by(eth_tx_hash: eth_tx_hash)
     return if tx.nil?
-    return unless tx.ac_tx_hash.nil?
 
     tx.with_lock do
+      return unless tx.ac_tx_hash.nil?
       user_address = tx.address
       # decimal value
       value = tx.value.to_i
@@ -120,9 +120,9 @@ class EthereumNetwork
   def update_tx(eth_tx_hash)
     tx = EthToEbc.find_by(eth_tx_hash: eth_tx_hash)
     return if tx.nil?
-    return unless tx.pending?
 
     tx.with_lock do
+      return unless tx.pending?
       rebirth_api_url = ENV.fetch("REBIRTH_API_URL")
       conn = Faraday.new(url: rebirth_api_url) do |faraday|
         faraday.headers["Content-Type"] = "application/json"
