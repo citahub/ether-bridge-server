@@ -79,10 +79,14 @@ class AppChainNetwork
   end
 
   def process_transfers
-    ebc_to_eths = EbcToEth.started
-    ebc_to_eths.find_each do |e2e|
-      EbcToEthTransferJob.perform_later(e2e.wd_tx_hash)
-    end
+    return if EbcToEth.exists?(status: :pending)
+
+    ebc_to_eth = EbcToEth.started.first
+    return if ebc_to_eth.nil?
+    # ebc_to_eths = EbcToEth.started
+    # ebc_to_eths.find_each do |e2e|
+    #   EbcToEthTransferJob.perform_later(e2e.wd_tx_hash)
+    # end
   end
 
   def transfer(wd_tx_hash)
@@ -112,9 +116,9 @@ class AppChainNetwork
   def update_tx(wd_tx_hash)
     tx = EbcToEth.find_by(wd_tx_hash: wd_tx_hash)
     return if tx.nil?
-    return unless tx.pending?
 
     tx.with_lock do
+      return unless tx.pending?
       eth_tx_hash = tx.eth_tx_hash
       web3 = EthereumNetwork.new_web3
       transaction = web3.eth.getTransactionByHash eth_tx_hash
