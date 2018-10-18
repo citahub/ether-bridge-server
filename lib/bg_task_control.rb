@@ -16,7 +16,7 @@ Daemons.run_proc("#{Rails.env}_eth_to_ebc_listen_transactions", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_eth_to_ebc.log"))
   loop do
     EthereumNetwork.new.listen_transactions
-    sleep(3)
+    sleep(10)
   end
 end
 
@@ -24,7 +24,7 @@ Daemons.run_proc("#{Rails.env}_eth_to_ebc_process_transfers", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_eth_to_ebc.log"))
   loop do
     EthereumNetwork.new.process_transfers
-    sleep(3)
+    sleep(10)
   end
 end
 
@@ -32,7 +32,7 @@ Daemons.run_proc("#{Rails.env}_eth_to_ebc_process_update_tx", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_eth_to_ebc.log"))
   loop do
     EthereumNetwork.new.process_update_tx
-    sleep(3)
+    sleep(10)
   end
 end
 
@@ -41,7 +41,7 @@ Daemons.run_proc("#{Rails.env}_ebc_to_eth_listen_event_logs", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_ebc_to_eth.log"))
   loop do
     AppChainNetwork.new.listen_event_logs
-    sleep(3)
+    sleep(10)
   end
 end
 
@@ -49,7 +49,7 @@ Daemons.run_proc("#{Rails.env}_ebc_to_eth_confirm_tx", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_ebc_to_eth.log"))
   loop do
     AppChainNetwork.new.confirm_tx
-    sleep(3)
+    sleep(10)
   end
 end
 
@@ -57,7 +57,7 @@ Daemons.run_proc("#{Rails.env}_ebc_to_eth_process_transfers", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_ebc_to_eth.log"))
   loop do
     AppChainNetwork.new.process_transfers
-    sleep(3)
+    sleep(10)
   end
 end
 
@@ -65,7 +65,7 @@ Daemons.run_proc("#{Rails.env}_ebc_to_eth_process_update_tx", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_ebc_to_eth.log"))
   loop do
     AppChainNetwork.new.process_update_tx
-    sleep(3)
+    sleep(10)
   end
 end
 
