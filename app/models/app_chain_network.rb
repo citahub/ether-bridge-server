@@ -61,6 +61,7 @@ class AppChainNetwork
                         wd_block_num: el["blockNumber"],
                         wd_tx_hash: wd_tx_hash
                       })
+      EbcToEthTransferJob.perform_later(wd_tx_hash)
     end
 
     listen_event_logs(page + 1)
@@ -103,6 +104,9 @@ class AppChainNetwork
       eth_tx_hash = client.transfer(key, tx.address, tx.value.to_i)
       tx.update(eth_tx_hash: eth_tx_hash, status: :pending)
     end
+
+    # enqueue
+    EbcToEthUpdateTxJob.perform_later(wd_tx_hash)
   end
 
   def process_update_tx
