@@ -66,6 +66,8 @@ gem "napp.rb", github: "cryptape/napp.rb"
 gem 'eth', '~> 0.4.10'
 gem 'ethereum.rb', '~> 2.2'
 
+gem 'daemons', '~> 1.2', '>= 1.2.6'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
