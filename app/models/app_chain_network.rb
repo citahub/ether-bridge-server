@@ -79,14 +79,14 @@ class AppChainNetwork
   end
 
   def process_transfers
-    return if EbcToEth.exists?(status: :pending)
-
-    ebc_to_eth = EbcToEth.started.first
-    return if ebc_to_eth.nil?
-    # ebc_to_eths = EbcToEth.started
-    # ebc_to_eths.find_each do |e2e|
-    #   EbcToEthTransferJob.perform_later(e2e.wd_tx_hash)
-    # end
+    # return if EbcToEth.exists?(status: :pending)
+    #
+    # ebc_to_eth = EbcToEth.started.first
+    # return if ebc_to_eth.nil?
+    ebc_to_eths = EbcToEth.started
+    ebc_to_eths.find_each do |e2e|
+      EbcToEthTransferJob.perform_later(e2e.wd_tx_hash)
+    end
   end
 
   def transfer(wd_tx_hash)
