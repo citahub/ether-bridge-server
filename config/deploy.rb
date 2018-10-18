@@ -84,15 +84,30 @@ task :deploy do
 
     on :launch do
       in_path(fetch(:current_path)) do
+        invoke :'stop_bg'
         invoke :'sidekiq:quiet'
         invoke :'puma:phased_restart'
         invoke :'sidekiq:restart'
+        invoke :'start_bg'
       end
     end
   end
 
   # you can use `run :local` to run tasks on local machine before of after the deploy scripts
   # run(:local){ say 'done' }
+end
+
+desc "start bg tasks"
+task :start_bg do
+  # invoke :'rake[bg:start]'
+  command %[bundle exec rake bg:start RAILS_ENV=#{fetch(:rails_env)}]
+end
+
+desc "stop bg tasks"
+task stop_bg: :remote_environment do
+  # invoke :'run[bundle exec rake bg:stop]'
+  # invoke :'rake[bg:stop]'
+  command %[bundle exec rake bg:stop RAILS_ENV=#{fetch(:rails_env)}]
 end
 
 # For help in making your deploy script, see the Mina documentation:
