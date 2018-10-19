@@ -75,12 +75,12 @@ class EthereumNetwork
     eth_to_ebcs = EthToEbc.started.where("eth_block_num <= ?", eth_current_block_num - 30)
     eth_to_ebcs.each do |e2e|
       # transfer(e2e.eth_tx_hash)
-      EthToEbcTransferJob.perform_later(e2e.eth_tx_hash)
+      EthToEbcTransferJob.perform_later(e2e.eth_tx_hash, SecureRandom.hex)
     end
   end
 
   # transfer to account
-  def transfer(eth_tx_hash)
+  def transfer(eth_tx_hash, nonce)
     tx = EthToEbc.find_by(eth_tx_hash: eth_tx_hash)
     return if tx.nil?
 
@@ -99,7 +99,7 @@ class EthereumNetwork
       contract_address = ENV.fetch("CONTRACT_ADDRESS")
       contract = napp.contract_at(abi, contract_address)
       valid_until_block = napp.rpc.block_number["result"].hex + 88
-      napp_transaction = NApp::Transaction.new(nonce: SecureRandom.hex, valid_until_block: valid_until_block, chain_id: ENV.fetch("APPCHAIN_CHAIN_ID").to_i, to: contract_address)
+      napp_transaction = NApp::Transaction.new(nonce: nonce, valid_until_block: valid_until_block, chain_id: ENV.fetch("APPCHAIN_CHAIN_ID").to_i, to: contract_address)
       contract_resp = contract.send_func(tx: napp_transaction, private_key: private_key, method: "mint", params: [user_address, value, tx.eth_tx_hash])
       tx.update(ac_tx_hash: contract_resp["hash"], ac_tx_at: Time.now, status: :pending)
 
