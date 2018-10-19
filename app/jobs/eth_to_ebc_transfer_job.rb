@@ -3,8 +3,8 @@ class EthToEbcTransferJob < ApplicationJob
   # include Sidekiq::Worker
   # sidekiq_options queue: 'eth_to_ebc_transfers', unique_across_queues: true
 
-  def perform(eth_tx_hash)
+  def perform(eth_tx_hash, nonce)
     # Do something later
-    EthereumNetwork.new.transfer(eth_tx_hash)
+    EthereumNetwork.new.transfer(eth_tx_hash, nonce)
   end
 end
