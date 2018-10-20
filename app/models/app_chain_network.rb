@@ -62,7 +62,7 @@ class AppChainNetwork
                         wd_block_num: el["blockNumber"],
                         wd_tx_hash: wd_tx_hash
                       })
-      EbcToEthTransferJob.perform_later(wd_tx_hash)
+      # EbcToEthTransferJob.perform_later(wd_tx_hash)
     end
 
     listen_event_logs(page + 1)
@@ -81,13 +81,15 @@ class AppChainNetwork
   end
 
   def process_transfers
-    # return if EbcToEth.exists?(status: :pending)
-    #
-    # ebc_to_eth = EbcToEth.started.first
-    # return if ebc_to_eth.nil?
-    ebc_to_eths = EbcToEth.started
-    ebc_to_eths.find_each do |e2e|
-      EbcToEthTransferJob.perform_later(e2e.wd_tx_hash)
+    tx = EbcToEth.pending.find_by("status_updated_at > ?", Time.now - 2.minutes)
+
+    if tx.nil?
+      # if not found, transfer one started
+      stx = EbcToEth.started.order(updated_at: :asc).first
+      EbcToEthTransferJob.perform_now(stx.wd_tx_hash)
+    else
+      # if found, update block info
+      EbcToEthUpdateTxJob.perform_now(tx.wd_tx_hash)
     end
   end
 
@@ -108,15 +110,15 @@ class AppChainNetwork
     end
 
     # enqueue
-    EbcToEthUpdateTxJob.perform_later(wd_tx_hash)
+    # EbcToEthUpdateTxJob.perform_later(wd_tx_hash)
   end
 
-  def process_update_tx
-    ebc_to_eths = EbcToEth.where(status: :pending)
-    ebc_to_eths.find_each do |e2e|
-      EbcToEthUpdateTxJob.perform_later(e2e.wd_tx_hash)
-    end
-  end
+  # def process_update_tx
+  #   ebc_to_eths = EbcToEth.where(status: :pending)
+  #   ebc_to_eths.find_each do |e2e|
+  #     EbcToEthUpdateTxJob.perform_later(e2e.wd_tx_hash)
+  #   end
+  # end
 
   # get eth_block_num eth_tx_timestamp
   def update_tx(wd_tx_hash)
