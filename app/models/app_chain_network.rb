@@ -1,6 +1,7 @@
 class AppChainNetwork
   # keccak256("Withdraw(uint64,uint256,address)")
   WITHDRAW_SIGNATURE = "0xbac718d989bd5e076dc97965980684101cba7f64814ba93dd38abf61b6699961"
+  GAS_PRICE = 20_000_000_000
 
   # rebirth event logs api
   def api(page: 1, per_page: 20)
@@ -101,6 +102,7 @@ class AppChainNetwork
       key = Eth::Key.new priv: pk
       infura_url = ENV.fetch("INFURA_URL")
       client = Ethereum::HttpClient.new(infura_url)
+      client.gas_price = GAS_PRICE
       eth_tx_hash = client.transfer(key, tx.address, tx.value.to_i)
       tx.update(eth_tx_hash: eth_tx_hash, status: :pending)
     end
