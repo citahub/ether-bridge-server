@@ -86,7 +86,8 @@ task :deploy do
       in_path(fetch(:current_path)) do
         invoke :'stop_bg'
         invoke :'sidekiq:quiet'
-        invoke :'puma:phased_restart'
+        invoke :'puma:stop'
+        invoke :'puma:start'
         invoke :'sidekiq:restart'
         invoke :'start_bg'
       end
