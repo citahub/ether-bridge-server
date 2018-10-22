@@ -102,22 +102,19 @@ class EthereumNetwork
       napp_transaction = NApp::Transaction.new(nonce: nonce, valid_until_block: valid_until_block, chain_id: ENV.fetch("APPCHAIN_CHAIN_ID").to_i, to: contract_address)
       contract_resp = contract.send_func(tx: napp_transaction, private_key: private_key, method: "mint", params: [user_address, value, tx.eth_tx_hash])
       tx.update(ac_tx_hash: contract_resp["hash"], ac_tx_at: Time.now, status: :pending)
-
-      # enqueue
-      EthToEbcUpdateTxJob.perform_later(tx.eth_tx_hash)
     end
   end
 
-  # # need polling
-  # def process_update_tx
-  #   # find all pending transactions, those need to update status
-  #   transactions = EthToEbc.where(status: :pending)
-  #   transactions.each do |tx|
-  #     # replace with sidekiq
-  #     # update_tx(tx.eth_tx_hash)
-  #     EthToEbcUpdateTxJob.perform_later(tx.eth_tx_hash)
-  #   end
-  # end
+  # need polling
+  def process_update_tx
+    # find all pending transactions, those need to update status
+    transactions = EthToEbc.where(status: :pending).where("status_updated_at >= ?", Time.now - 5.minutes)
+    transactions.each do |tx|
+      # replace with sidekiq
+      # update_tx(tx.eth_tx_hash)
+      EthToEbcUpdateTxJob.perform_later(tx.eth_tx_hash)
+    end
+  end
 
   # 异步调用，在 transfer 结束后开始查询
   def update_tx(eth_tx_hash)
