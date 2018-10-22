@@ -26,10 +26,47 @@ gem 'puma', '~> 3.11'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors', require: 'rack/cors'
 
 # env file
 gem 'dotenv-rails', '~> 2.5'
+
+# api json
+gem 'active_model_serializers', '~> 0.10.7'
+
+# paginate
+gem 'kaminari', '~> 1.1', '>= 1.1.1'
+
+# pry and ap
+gem 'pry-rails', '~> 0.3.6'
+gem 'awesome_print', '~> 1.8'
+
+# parse json
+gem 'oj', '~> 3.6', '>= 3.6.11'
+
+# Redis
+gem 'hiredis', '~> 0.6.1'
+gem 'redis', '~> 4.0', '>= 4.0.2'
+# gem 'redis-namespace', '~> 1.6'
+gem 'redis-objects', '~> 1.4', '>= 1.4.3'
+
+# Sidekiq
+gem 'sidekiq', '~> 5.2', '>= 5.2.2'
+gem 'sidekiq-unique-jobs', '~> 6.0', '>= 6.0.6'
+
+# Deployment
+gem 'mina', require: false
+gem 'mina-puma', require: false
+gem 'mina-multistage', require: false
+gem 'mina-sidekiq', '~> 1.0', '>= 1.0.3', require: false
+
+# appchain sdk
+gem "napp.rb", github: "cryptape/napp.rb"
+# ethereum sdk
+gem 'eth', '~> 0.4.10'
+gem 'ethereum.rb', '~> 2.2'
+
+gem 'daemons', '~> 1.2', '>= 1.2.6'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
