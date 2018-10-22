@@ -1,7 +1,7 @@
 class Api::V1::EthToEbcsController < ApplicationController
-  # GET /api/v1/eth_to_ebcs
+  # GET /api/v1/eth_to_ebcs/:address
   def index
-    eth_to_ebcs = EthToEbc.order(created_at: :desc).page(params[:page]).per(params[:per_page])
+    eth_to_ebcs = EthToEbc.where(address: params[:address]).order(created_at: :desc).page(params[:page]).per(params[:per_page])
 
     render json: {
       result: {
