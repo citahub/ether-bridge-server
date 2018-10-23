@@ -86,7 +86,13 @@ class AppChainNetwork
     if tx.nil?
       # if not found, transfer one started
       stx = EbcToEth.started.order(updated_at: :asc).first
-      EbcToEthTransferJob.perform_now(stx.wd_tx_hash)
+      stx.with_lock do
+        begin
+          EbcToEthTransferJob.perform_now(stx.wd_tx_hash)
+        rescue
+          stx.update(status: :failed)
+        end
+      end
     else
       # if found, update block info
       EbcToEthUpdateTxJob.perform_now(tx.wd_tx_hash)
