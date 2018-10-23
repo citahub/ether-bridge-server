@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # eth to ebc logic
 class EthereumNetwork
   # get etherscan query tx list api
@@ -15,7 +17,7 @@ class EthereumNetwork
       apikey: ENV.fetch("ETHERSCAN_API_TOKEN")
     }
 
-    params_str = params.reject { |_k, v| v == nil }.map { |k, v| "#{k}=#{v}" }.join("&")
+    params_str = params.reject { |_k, v| v.nil? }.map { |k, v| "#{k}=#{v}" }.join("&")
 
     "#{host}?#{params_str}"
   end
@@ -49,13 +51,14 @@ class EthereumNetwork
       eth_tx_hash = tx["hash"]
       flag = EthToEbc.exists?(eth_tx_hash: eth_tx_hash)
       return if flag
-      EthToEbc.create({
-                        address: tx["from"],
-                        eth_block_num: tx["blockNumber"],
-                        eth_block_timestamp: tx["timeStamp"],
-                        eth_tx_hash: eth_tx_hash,
-                        value: tx["value"],
-                      })
+
+      EthToEbc.create(
+        address: tx["from"],
+        eth_block_num: tx["blockNumber"],
+        eth_block_timestamp: tx["timeStamp"],
+        eth_tx_hash: eth_tx_hash,
+        value: tx["value"]
+      )
     end
 
     listen_transactions(page + 1)
@@ -86,6 +89,7 @@ class EthereumNetwork
 
     tx.with_lock do
       return unless tx.ac_tx_hash.nil?
+
       user_address = tx.address
       # decimal value
       value = tx.value.to_i
@@ -94,7 +98,7 @@ class EthereumNetwork
       private_key = ENV.fetch("ACCOUNT_PRIVATE_KEY")
 
       napp = NApp::Client.new(appchain_url)
-      abi = File.read(Rails.root.join("lib/ebc_abi.json"))
+      abi = File.read(Rails.root.join("lib", "ebc_abi.json"))
 
       contract_address = ENV.fetch("CONTRACT_ADDRESS")
       contract = napp.contract_at(abi, contract_address)
@@ -116,13 +120,14 @@ class EthereumNetwork
     end
   end
 
-  # 异步调用，在 transfer 结束后开始查询
+  # start after transfer completed
   def update_tx(eth_tx_hash)
     tx = EthToEbc.find_by(eth_tx_hash: eth_tx_hash)
     return if tx.nil?
 
     tx.with_lock do
       return unless tx.pending?
+
       rebirth_api_url = ENV.fetch("REBIRTH_API_URL")
       conn = Faraday.new(url: rebirth_api_url) do |faraday|
         faraday.headers["Content-Type"] = "application/json"
@@ -135,17 +140,17 @@ class EthereumNetwork
       # return if transaction is nil, will query later
       return if transaction.nil?
 
-      tx.update({
-                  ac_block_num: transaction["blockNumber"].hex,
-                  ac_block_timestamp: transaction["timestamp"],
-                  status: transaction["errorMessage"].nil? ? :completed : :failed
-                })
+      tx.update(
+        ac_block_num: transaction["blockNumber"].hex,
+        ac_block_timestamp: transaction["timestamp"],
+        status: transaction["errorMessage"].nil? ? :completed : :failed
+      )
     end
   end
 
   def self.new_web3
     infura_url = ENV.fetch("INFURA_URL")
     uri = URI.parse(infura_url)
-    Web3::Eth::Rpc.new host: uri.host, port: uri.port, connect_options: { use_ssl: uri.scheme == "https" ? true : false, rpc_path: uri.path }
+    Web3::Eth::Rpc.new host: uri.host, port: uri.port, connect_options: { use_ssl: uri.scheme == "https", rpc_path: uri.path }
   end
 end
