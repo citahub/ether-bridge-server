@@ -10,6 +10,7 @@ AllCops:
   - 'Gemfile'
   - 'Gemfile.lock'
   - 'vendor/**/*'
+  - 'tmp/**/*'
 
 Bundler/OrderedGems:
   Enabled: false

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::EbcToEthsController < ApplicationController
   # GET /api/v1/ebc_to_eths/:address
   def index

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class EbcToEth < ApplicationRecord
   enum status: {
     started: 0,
     pending: 10,
     completed: 20,
     failed: 30,
-    success: 40,
+    success: 40
   }
 
   validates :wd_tx_hash, presence: true, uniqueness: true

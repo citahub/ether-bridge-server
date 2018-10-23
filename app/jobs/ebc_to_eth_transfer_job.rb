@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EbcToEthTransferJob < ApplicationJob
   queue_as :ebc_to_eth_transfers
 

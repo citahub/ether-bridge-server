@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EthToEbcTransferJob < ApplicationJob
   queue_as :eth_to_ebc_transfers
   # include Sidekiq::Worker
