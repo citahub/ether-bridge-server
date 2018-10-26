@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EthToEbcUpdateTxJob < ApplicationJob
   queue_as :eth_to_ebc_update_tx
 

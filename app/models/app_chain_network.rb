@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppChainNetwork
   # keccak256("Withdraw(uint64,uint256,address)")
   WITHDRAW_SIGNATURE = "0xbac718d989bd5e076dc97965980684101cba7f64814ba93dd38abf61b6699961"
@@ -5,7 +7,7 @@ class AppChainNetwork
 
   # rebirth event logs api
   def api(page: 1, per_page: 20)
-    host = "#{ENV.fetch("REBIRTH_EVENT_LOG_API_URL")}/#{ENV.fetch("CONTRACT_ADDRESS")}"
+    host = "#{ENV.fetch('REBIRTH_EVENT_LOG_API_URL')}/#{ENV.fetch('CONTRACT_ADDRESS')}"
     params = {
       page: page,
       perPage: per_page
@@ -54,14 +56,14 @@ class AppChainNetwork
 
       pel = parse_event_log(el)
       timestamp = napp.rpc.get_block_by_number(el["blockNumber"], false).dig("result", "header", "timestamp")
-      EbcToEth.create({
-                        address: pel[:addr],
-                        wdid: pel[:wdid],
-                        value: pel[:token].to_s,
-                        initialized_timestamp: timestamp,
-                        wd_block_num: el["blockNumber"],
-                        wd_tx_hash: wd_tx_hash
-                      })
+      EbcToEth.create(
+        address: pel[:addr],
+        wdid: pel[:wdid],
+        value: pel[:token].to_s,
+        initialized_timestamp: timestamp,
+        wd_block_num: el["blockNumber"],
+        wd_tx_hash: wd_tx_hash
+      )
       # EbcToEthTransferJob.perform_later(wd_tx_hash)
     end
 
@@ -70,11 +72,11 @@ class AppChainNetwork
 
   def parse_event_log(event_log)
     web3 = EthereumNetwork.new_web3
-    abi = File.read(Rails.root.join("lib/ebc_abi.json"))
+    abi = File.read(Rails.root.join("lib", "ebc_abi.json"))
     my_contract = web3.eth.contract(abi)
     log = Web3::Eth::Log.new(event_log)
     params = my_contract.parse_log_args log
-    param_names = [:wdid, :token, :addr]
+    param_names = %i(wdid token addr)
     hash = Hash[param_names.zip(params)]
     hash[:addr] = NApp::Utils.add_hex_prefix(hash[:addr])
     hash
@@ -87,11 +89,9 @@ class AppChainNetwork
       # if not found, transfer one started
       stx = EbcToEth.started.order(updated_at: :asc).first
       stx.with_lock do
-        begin
-          EbcToEthTransferJob.perform_now(stx.wd_tx_hash)
-        rescue
-          stx.update(status: :failed)
-        end
+        EbcToEthTransferJob.perform_now(stx.wd_tx_hash)
+      rescue StandardError
+        stx.update(status: :failed)
       end
     else
       # if found, update block info
@@ -105,6 +105,7 @@ class AppChainNetwork
 
     tx.with_lock do
       return unless tx.started?
+
       private_key = ENV.fetch("ACCOUNT_PRIVATE_KEY")
       pk = NApp::Utils.remove_hex_prefix(private_key)
       key = Eth::Key.new priv: pk
@@ -133,6 +134,7 @@ class AppChainNetwork
 
     tx.with_lock do
       return unless tx.pending?
+
       eth_tx_hash = tx.eth_tx_hash
       web3 = EthereumNetwork.new_web3
       transaction = web3.eth.getTransactionByHash eth_tx_hash
@@ -150,5 +152,4 @@ class AppChainNetwork
     eth_current_block_num = web3.eth.blockNumber
     EbcToEth.completed.where("eth_block_num <= ?", eth_current_block_num - 30).update_all(status: :success)
   end
-
 end

@@ -10,7 +10,6 @@ options = {
   dir: Rails.root.join("tmp", "pids").to_s
 }
 
-
 # ETH To EBC
 Daemons.run_proc("#{Rails.env}_eth_to_ebc_listen_transactions", options) do
   Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_eth_to_ebc.log"))
@@ -67,4 +66,3 @@ end
 #     sleep(10)
 #   end
 # end
-

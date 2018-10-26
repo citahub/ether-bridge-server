@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EbcToEthUpdateTxJob < ApplicationJob
   queue_as :ebc_to_eth_update_tx
   # sidekiq_options :retry => 10
