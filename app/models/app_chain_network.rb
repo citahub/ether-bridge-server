@@ -32,8 +32,8 @@ class AppChainNetwork
   # compare two address is same ?
   # @return [true | false]
   def same_address?(addr1, addr2)
-    addr_1 = NApp::Utils.remove_hex_prefix(addr1)
-    addr_2 = NApp::Utils.remove_hex_prefix(addr2)
+    addr_1 = AppChain::Utils.remove_hex_prefix(addr1)
+    addr_2 = AppChain::Utils.remove_hex_prefix(addr2)
     addr_1.casecmp?(addr_2)
   end
 
@@ -47,7 +47,7 @@ class AppChainNetwork
     return if is_empty
 
     appchain_url = ENV.fetch("APPCHAIN_URL")
-    napp = NApp::Client.new(appchain_url)
+    appchain = AppChain::Client.new(appchain_url)
 
     event_logs.each do |el|
       wd_tx_hash = el["transactionHash"]
@@ -55,7 +55,7 @@ class AppChainNetwork
       return if flag
 
       pel = parse_event_log(el)
-      timestamp = napp.rpc.get_block_by_number(el["blockNumber"], false).dig("result", "header", "timestamp")
+      timestamp = appchain.rpc.get_block_by_number(el["blockNumber"], false).dig("result", "header", "timestamp")
       EbcToEth.create(
         address: pel[:addr],
         wdid: pel[:wdid],
@@ -78,7 +78,7 @@ class AppChainNetwork
     params = my_contract.parse_log_args log
     param_names = %i(wdid token addr)
     hash = Hash[param_names.zip(params)]
-    hash[:addr] = NApp::Utils.add_hex_prefix(hash[:addr])
+    hash[:addr] = AppChain::Utils.add_hex_prefix(hash[:addr])
     hash
   end
 
@@ -107,7 +107,7 @@ class AppChainNetwork
       return unless tx.started?
 
       private_key = ENV.fetch("ACCOUNT_PRIVATE_KEY")
-      pk = NApp::Utils.remove_hex_prefix(private_key)
+      pk = AppChain::Utils.remove_hex_prefix(private_key)
       key = Eth::Key.new priv: pk
       infura_url = ENV.fetch("INFURA_URL")
       client = Ethereum::HttpClient.new(infura_url)
