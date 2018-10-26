@@ -61,7 +61,7 @@ gem 'mina-multistage', require: false
 gem 'mina-sidekiq', '~> 1.0', '>= 1.0.3', require: false
 
 # appchain sdk
-gem "napp.rb", github: "cryptape/napp.rb"
+gem 'appchain.rb', '0.1.0'
 # ethereum sdk
 gem 'eth', '~> 0.4.10'
 gem 'ethereum.rb', '~> 2.2'
