@@ -37,8 +37,8 @@ class EthereumNetwork
   # compare two address is same ?
   # @return [true | false]
   def same_address?(addr1, addr2)
-    addr_1 = NApp::Utils.remove_hex_prefix(addr1)
-    addr_2 = NApp::Utils.remove_hex_prefix(addr2)
+    addr_1 = AppChain::Utils.remove_hex_prefix(addr1)
+    addr_2 = AppChain::Utils.remove_hex_prefix(addr2)
     addr_1.casecmp?(addr_2)
   end
 
@@ -97,14 +97,14 @@ class EthereumNetwork
 
       private_key = ENV.fetch("ACCOUNT_PRIVATE_KEY")
 
-      napp = NApp::Client.new(appchain_url)
+      appchain = AppChain::Client.new(appchain_url)
       abi = File.read(Rails.root.join("lib", "ebc_abi.json"))
 
       contract_address = ENV.fetch("CONTRACT_ADDRESS")
-      contract = napp.contract_at(abi, contract_address)
-      valid_until_block = napp.rpc.block_number["result"].hex + 88
-      napp_transaction = NApp::Transaction.new(nonce: nonce, valid_until_block: valid_until_block, chain_id: ENV.fetch("APPCHAIN_CHAIN_ID").to_i, to: contract_address)
-      contract_resp = contract.send_func(tx: napp_transaction, private_key: private_key, method: "mint", params: [user_address, value, tx.eth_tx_hash])
+      contract = appchain.contract_at(abi, contract_address)
+      valid_until_block = appchain.rpc.block_number["result"].hex + 88
+      appchain_transaction = AppChain::Transaction.new(nonce: nonce, valid_until_block: valid_until_block, chain_id: ENV.fetch("APPCHAIN_CHAIN_ID").to_i, to: contract_address)
+      contract_resp = contract.send_func(tx: appchain_transaction, private_key: private_key, method: "mint", params: [user_address, value, tx.eth_tx_hash])
       tx.update(ac_tx_hash: contract_resp["hash"], ac_tx_at: Time.now, status: :pending)
     end
   end
